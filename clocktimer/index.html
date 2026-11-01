@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="indigo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClockTimer — Ultimate Student Productivity Ecosystem</title>
+  <meta name="description" content="Ultimate student productivity ecosystem: Study Timer, Live Clock, Sound Lab, Smart Planner, Subjects, Deep Focus, Gamification, and AI Assistant.">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP APP HEADER & PURPOSE BAR
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="header-left">
+      <!-- Back to Portfolio Link -->
+      <a href="../" class="btn-icon" title="Back to Portfolio" aria-label="Portfolio">
+        <i data-lucide="arrow-left"></i>
+      </a>
+
+      <!-- Brand Logo -->
+      <a href="./" class="brand-link">
+        <i data-lucide="clock" style="color: var(--accent);"></i>
+        <span>CLOCKTIMER</span>
+        <span class="brand-badge">PRO</span>
+      </a>
+
+      <!-- Left Top Corner: Hide/Show Study Purpose Button -->
+      <button id="btn-toggle-purpose" class="btn-icon" title="Hide/Show Purpose (Top Left)" aria-label="Toggle Purpose">
+        <i data-lucide="eye"></i>
+      </button>
+    </div>
+
+    <!-- Center: Prominent Editable Study Purpose Bar -->
+    <div class="header-center">
+      <div class="study-purpose-banner" id="study-purpose-banner">
+        <span class="purpose-tag-icon"><i data-lucide="bookmark"></i></span>
+        <input type="text" id="study-purpose-input" class="study-purpose-input" placeholder="What are you studying right now?" aria-label="Current Study Purpose">
+      </div>
+    </div>
+
+    <!-- Right Header Controls: Streak, XP, Focus Mode, Audio Mute -->
+    <div class="header-right">
+      <div class="streak-badge" id="header-streak-badge" title="Daily Study Streak">
+        <i data-lucide="flame"></i> <span>0d</span>
+      </div>
+      <div class="xp-badge" id="header-level-badge" title="Current Level">
+        Lvl 1
+      </div>
+      <button class="btn-icon" id="btn-enter-focus" title="Deep Focus Mode (F)" aria-label="Enter Focus Mode">
+        <i data-lucide="maximize-2"></i>
+      </button>
+      <button class="btn-icon" id="btn-sound-mute" title="Mute/Unmute Audio (M)" aria-label="Mute Audio">
+        <i data-lucide="volume-2"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       NAVIGATION BAR / TABS
+       ======================================================================== -->
+  <nav class="app-nav-bar" aria-label="Main Navigation">
+    <button class="nav-tab-btn active" data-tab="timer"><i data-lucide="timer"></i> Focus Timer</button>
+    <button class="nav-tab-btn" data-tab="planner"><i data-lucide="calendar"></i> Smart Planner</button>
+    <button class="nav-tab-btn" data-tab="subjects"><i data-lucide="book-open"></i> Subjects</button>
+    <button class="nav-tab-btn" data-tab="sounds"><i data-lucide="headphones"></i> Sound Lab</button>
+    <button class="nav-tab-btn" data-tab="analytics"><i data-lucide="bar-chart-2"></i> Analytics</button>
+    <button class="nav-tab-btn" data-tab="ai"><i data-lucide="sparkles"></i> AI Assistant</button>
+    <button class="nav-tab-btn" data-tab="gamification"><i data-lucide="trophy"></i> Achievements</button>
+    <button class="nav-tab-btn" data-tab="settings"><i data-lucide="settings"></i> Settings</button>
+  </nav>
+
+  <!-- ========================================================================
+       MAIN APPLICATION PANELS
+       ======================================================================== -->
+  <main class="app-main">
+
+    <!-- ----------------------------------------------------------------------
+         TAB 1: FOCUS TIMER & LIVE CLOCK
+         ---------------------------------------------------------------------- -->
+    <section class="app-tab-panel active" id="tab-timer">
+      <div class="timer-hero-grid">
+        
+        <!-- Main Timer Card -->
+        <div class="timer-card">
+          <!-- Real-time Live Clock Display -->
+          <div class="live-clock-widget" title="Live Real-Time Clock">
+            <div class="clock-digits">
+              <span id="clock-hours">12</span><span class="clock-colon">:</span><span id="clock-minutes">00</span><span class="clock-colon">:</span><span id="clock-seconds">00</span>
+              <span class="clock-ampm" id="clock-ampm">PM</span>
+            </div>
+            <div class="clock-date" id="clock-date">Saturday, Oct 31, 2026</div>
+          </div>
+
+          <!-- Timer Modes -->
+          <div class="timer-modes">
+            <button class="timer-mode-pill active" data-mode="countdown" data-mins="25">25m Pomodoro</button>
+            <button class="timer-mode-pill" data-mode="countdown" data-mins="50">50m Deep Work</button>
+            <button class="timer-mode-pill" data-mode="countdown" data-mins="90">90m Flow</button>
+            <button class="timer-mode-pill" data-mode="countdown" data-mins="15">15m Sprint</button>
+            <button class="timer-mode-pill" data-mode="stopwatch">Stopwatch</button>
+          </div>
+
+          <!-- Circular SVG Animated Timer -->
+          <div class="timer-ring-container">
+            <svg class="timer-svg" viewBox="0 0 300 300">
+              <circle class="timer-ring-bg" cx="150" cy="150" r="135"></circle>
+              <circle class="timer-ring-progress" id="timer-progress-ring" cx="150" cy="150" r="135"></circle>
+            </svg>
+            <div class="timer-digits-wrap">
+              <div class="timer-display" id="timer-display">25:00</div>
+              <div class="status-badge status-idle" id="timer-status-badge">READY TO FOCUS</div>
+            </div>
+          </div>
+
+          <!-- Main Controls -->
+          <div class="timer-actions-row">
+            <button class="btn-primary" id="btn-timer-start">
+              <i data-lucide="play"></i> <span>Start Focus</span>
+            </button>
+            <button class="btn-secondary" id="btn-timer-reset">
+              <i data-lucide="rotate-ccw"></i> Reset
+            </button>
+            <button class="btn-secondary" id="btn-timer-complete" title="Finish Session & Earn XP">
+              <i data-lucide="check-circle-2"></i> Finish Session
+            </button>
+            <button class="btn-secondary" id="btn-log-distraction" title="Record an Interruption">
+              <i data-lucide="alert-circle"></i> Log Distraction
+            </button>
+          </div>
+
+          <!-- Extension pills & Subject Selector -->
+          <div class="timer-secondary-actions">
+            <button class="btn-add-min" data-add="5">+5 Min</button>
+            <button class="btn-add-min" data-add="10">+10 Min</button>
+            <select class="input-select-sm" id="timer-subject-select" title="Active Study Subject">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Sidebar Widgets -->
+        <aside class="timer-sidebar">
+          
+          <!-- Smart Study Recommendation Card -->
+          <div class="widget-card" id="smart-recommendation-card">
+            <div class="widget-header">
+              <span class="widget-title"><i data-lucide="zap" style="color: var(--accent);"></i> Smart Recommendation</span>
+            </div>
+            <div class="rec-title">Calculus & Limits</div>
+            <div class="rec-reason">Upcoming Midterm Exam in 5 days (40% syllabus pending)</div>
+            <div class="rec-actions" style="margin-top: 0.8rem;">
+              <button class="btn-primary-sm" onclick="window.clockTimerApp.startTimerForSubject('sub_1', 'Calculus Midterm Prep')"><i data-lucide="play"></i> Focus Now</button>
+            </div>
+          </div>
+
+          <!-- Focus Efficiency & Distraction Stats Widget -->
+          <div class="widget-card">
+            <div class="widget-header">
+              <span class="widget-title"><i data-lucide="activity"></i> Today's Focus Efficiency</span>
+              <span class="badge badge-normal" id="focus-efficiency-score">100%</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+              Distractions recorded today: <strong id="daily-distraction-count">0</strong>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-subtle);" id="distraction-trend-text">
+              Zero distractions recorded today. Keep the deep flow going!
+            </div>
+          </div>
+
+          <!-- Quick Break & Breathing Assistant Widget -->
+          <div class="widget-card">
+            <div class="widget-header">
+              <span class="widget-title"><i data-lucide="heart" style="color: #38bdf8;"></i> Break Assistant</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.8rem;">
+              Feeling fatigued? Try the 4-4-4-4 Box Breathing exercise or 20-20-20 eye rest.
+            </p>
+            <button class="btn-secondary-sm" onclick="document.getElementById('modal-break-assistant').classList.add('active')">
+              <i data-lucide="wind"></i> Open Guided Breathing
+            </button>
+          </div>
+
+        </aside>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         TAB 2: SMART STUDY PLANNER
+         ---------------------------------------------------------------------- -->
+    <section class="app-tab-panel" id="tab-planner">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 0.8rem;">
+        <div>
+          <h2>Smart Study Planner</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Manage your weekly timetable, exam countdowns, and assignment deadlines.</p>
+        </div>
+        <div style="display: flex; gap: 0.6rem;">
+          <button class="btn-secondary-sm" onclick="window.clockTimerApp.exportCalendarICS()"><i data-lucide="download"></i> Export iCalendar (.ics)</button>
+        </div>
+      </div>
+
+      <div class="planner-grid">
+        <!-- Daily & Weekly Timetable -->
+        <div class="planner-section">
+          <div class="widget-header">
+            <span class="widget-title"><i data-lucide="calendar"></i> Weekly Timetable</span>
+          </div>
+          <div id="timetable-list">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Exam Countdown & Deadlines Column -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- Exam Countdown -->
+          <div class="planner-section">
+            <div class="widget-header">
+              <span class="widget-title"><i data-lucide="alert-triangle" style="color: var(--warning);"></i> Exam Countdown</span>
+            </div>
+            <div id="exam-countdown-list">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Assignment Deadlines -->
+          <div class="planner-section">
+            <div class="widget-header">
+              <span class="widget-title"><i data-lucide="check-square" style="color: var(--success);"></i> Assignment Deadlines</span>
+            </div>
+            <div id="assignment-list">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         TAB 3: SUBJECT MANAGEMENT
+         ---------------------------------------------------------------------- -->
+    <section class="app-tab-panel" id="tab-subjects">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.4rem; flex-wrap: wrap; gap: 0.8rem;">
+        <div>
+          <h2>Subject Management & Syllabus Tracker</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Track syllabus progress, manage chapters and monitor study hours per subject.</p>
+        </div>
+        <button class="btn-primary-sm" onclick="document.getElementById('modal-add-subject').classList.add('active')">
+          <i data-lucide="plus"></i> Add New Subject
+        </button>
+      </div>
+
+      <!-- Global Syllabus Progress Bar -->
+      <div class="widget-card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span>Overall Syllabus Completed</span>
+          <strong id="global-syllabus-percent">0%</strong>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="global-syllabus-bar" style="width: 0%; background: var(--accent);"></div>
+        </div>
+      </div>
+
+      <!-- Subjects Grid -->
+      <div class="subjects-grid" id="subjects-grid">
+        <!-- Populated dynamically -->
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         TAB 4: STUDY SOUND LAB UPGRADE
+         ---------------------------------------------------------------------- -->
+    <section class="app-tab-panel" id="tab-sounds">
+      <div class="sound-mixer-panel">
+        <div class="mixer-master-bar">
+          <div>
+            <h2>Study Sound Lab & Audio Mixer</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Pure procedural Web Audio synthesizer: zero downloads, zero lag, works 100% offline.</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <div>
+              <span style="font-size: 0.82rem; color: var(--text-muted); margin-right: 0.4rem;">Presets:</span>
+              <select class="input-select-sm" id="sound-preset-select">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div>
+              <span style="font-size: 0.82rem; color: var(--text-muted); margin-right: 0.4rem;">Sleep Timer:</span>
+              <select class="input-select-sm" id="sound-sleep-timer-select">
+                <option value="0">Off</option>
+                <option value="15">15 min</option>
+                <option value="30">30 min</option>
+                <option value="45">45 min</option>
+                <option value="60">60 min</option>
+              </select>
+              <span id="sound-sleep-label" style="font-size: 0.75rem; color: var(--accent); margin-left: 0.3rem;"></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="volume-2" style="color: var(--text-muted);"></i>
+              <input type="range" min="0" max="100" value="80" id="master-volume-slider" style="accent-color: var(--accent); cursor: pointer;" title="Master Volume">
+            </div>
+          </div>
+        </div>
+
+        <!-- Sound Tracks Grid -->
+        <div class="sound-tracks-grid" id="sound-tracks-container">
+          <!-- Populated dynamically with Brown, White, Pink, Black noise, Rain, Forest, Ocean, Cafe, Binaural Beats -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         TAB 5: ADVANCED ANALYTICS
+         ---------------------------------------------------------------------- -->
+    <section class="app-tab-panel" id="tab-analytics">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.4rem; flex-wrap: wrap; gap: 0.8rem;">
+        <div>
+          <h2>Advanced Study Analytics</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Track daily study hours, subject allocation, 52-week activity, and peak focus periods.</p>
+        </div>
+        <div style="display: flex; gap: 0.6rem;">
+          <button class="btn-secondary-sm" onclick="window.clockTimerApp.exportCSVReport()"><i data-lucide="file-text"></i> Export CSV</button>
+          <button class="btn-secondary-sm" onclick="window.clockTimerApp.printPDFReport()"><i data-lucide="printer"></i> Print / PDF Report</button>
+        </div>
+      </div>
+
+      <!-- Analytics Cards Grid -->
+      <div class="analytics-grid">
+        <!-- Daily 7-day Bar Chart -->
+        <div class="analytics-card">
+          <div class="widget-header">
+            <span class="widget-title"><i data-lucide="bar-chart"></i> Daily Study Time (Last 7 Days)</span>
+          </div>
+          <canvas id="daily-chart-canvas" height="200"></canvas>
+        </div>
+
+        <!-- Subject Time Breakdown -->
+        <div class="analytics-card">
+          <div class="widget-header">
+            <span class="widget-title"><i data-lucide="pie-chart"></i> Subject Distribution</span>
+          </div>
+          <div id="subject-breakdown-bars">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 52-Week GitHub Style Heatmap -->
+      <div class="analytics-card" style="margin-bottom: 1.5rem;">
+        <div class="widget-header">
+          <span class="widget-title"><i data-lucide="grid"></i> Annual Study Heatmap (52-Week Consistency)</span>
+          <div style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; color: var(--text-subtle);">
+            <span>Less</span>
+            <span class="heatmap-cell lvl-0" style="display: inline-block;"></span>
+            <span class="heatmap-cell lvl-1" style="display: inline-block;"></span>
+            <span class="heatmap-cell lvl-2" style="display: inline-block;"></span>
+            <span class="heatmap-cell lvl-3" style="display: inline-block;"></span>
+            <span class="heatmap-cell lvl-4" style="display: inline-block;"></span>
+            <span>More</span>
+          </div>
+        </div>
+        <div class="heatmap-container">
+          <div class="study-heatmap-grid" id="study-heatmap-grid">
+            <!-- 52 columns x 7 rows cells -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Prime Focus Periods Analyzer -->
+      <div class="analytics-card">
+        <div class="widget-header">
+          <span class="widget-title"><i data-lucide="sun"></i> Productivity by Time of Day</span>
+          <span class="badge badge-normal" id="best-period-badge">Prime Focus Zone: Calculating...</span>
+        </div>
+        <div class="periods-grid">
+          <div class="period-box">
+            <div class="period-title"><i data-lucide="sunrise"></i> Morning (5am - 12pm)</div>
+            <div class="period-val" id="period-morning-val">0 min</div>
+          </div>
+          <div class="period-box">
+            <div class="period-title"><i data-lucide="sun"></i> Afternoon (12pm - 5pm)</div>
+            <div class="period-val" id="period-afternoon-val">0 min</div>
+          </div>
+          <div class="period-box">
+            <div class="period-title"><i data-lucide="sunset"></i> Evening (5pm - 10pm)</div>
+            <div class="period-val" id="period-evening-val">0 min</div>
+          </div>
+          <div class="period-box">
+            <div class="period-title"><i data-lucide="moon"></i> Night (10pm - 5am)</div>
+            <div class="period-val" id="period-night-val">0 min</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         TAB 6: AI STUDY ASSISTANT
+         ---------------------------------------------------------------------- -->
+    <section class="app-tab-panel" id="tab-ai">
+      <div class="ai-panel">
+        <div style="margin-bottom: 1.2rem;">
+          <h2>AI Study Assistant (Powered by Google Gemini)</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Explain complex topics, generate exam revision questions, draft notes, and optimize schedules.</p>
+        </div>
+
+        <!-- Setup Notice when no key is configured -->
+        <div class="ai-setup-notice" id="ai-setup-notice">
+          <strong><i data-lucide="key"></i> Google Gemini API Key Required for Real AI Responses:</strong>
+          <p style="font-size: 0.85rem; margin-top: 0.3rem;">
+            To ensure secure, authentic AI responses, please enter your free Google Gemini API key. Your key is stored strictly on your device inside browser LocalStorage and is never shared.
+          </p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap;">
+            <input type="password" id="gemini-api-key-input" class="input-text" style="max-width: 320px;" placeholder="AIzaSy...">
+            <button class="btn-primary-sm" id="btn-save-gemini-key">Save Key</button>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="btn-secondary-sm">Get Free Key at Google AI Studio &rarr;</a>
+          </div>
+        </div>
+
+        <!-- AI Query Form -->
+        <div class="ai-query-form">
+          <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;">
+            <label class="form-label" style="margin: 0;">Task Mode:</label>
+            <select class="input-select-sm" id="ai-task-mode">
+              <option value="explain">Explain Topic Simply (with Analogies)</option>
+              <option value="quiz">Generate 5 Revision Questions & Answers</option>
+              <option value="notes">Create Structured High-Yield Notes</option>
+              <option value="schedule">Generate Revision Timetable</option>
+              <option value="recommend">Recommend High-Yield Topics</option>
+            </select>
+          </div>
+          <textarea id="ai-user-prompt" class="ai-input-textarea" placeholder="E.g., 'Explain the second law of thermodynamics and entropy with a memorable analogy' or paste notes..."></textarea>
+          <div>
+            <button class="btn-primary" id="btn-ai-generate">
+              <i data-lucide="sparkles"></i> <span>Ask AI Assistant</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Formatted Response Box -->
+        <div class="ai-response-box" id="ai-response-box">
+          <div style="color: var(--text-subtle); text-align: center; padding: 2rem 0;">
+            <i data-lucide="bot" style="font-size: 2rem; display: block; margin: 0 auto 0.5rem auto;"></i>
+            Enter a topic or academic question above and click "Ask AI Assistant" to generate explanations, flashcard questions, or study notes.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         TAB 7: GAMIFICATION & ACHIEVEMENTS
+         ---------------------------------------------------------------------- -->
+    <section class="app-tab-panel" id="tab-gamification">
+      <div class="gamification-hero">
+        <!-- Profile Card -->
+        <div class="profile-card">
+          <div class="profile-avatar"><i data-lucide="graduation-cap" style="width: 36px; height: 36px;"></i></div>
+          <div class="profile-level" id="profile-level">Lvl 1</div>
+          <div class="profile-title" id="profile-title">Novice Seeker</div>
+          <div style="margin-top: 0.8rem; font-size: 0.95rem; font-weight: 700; color: var(--accent);" id="profile-xp">0 XP</div>
+          <div style="margin-top: 0.4rem; font-size: 0.82rem; color: var(--text-muted);">
+            Streak: <strong id="profile-streak" style="color: #f97316;">0 days</strong>
+          </div>
+        </div>
+
+        <!-- Personal Records & Weekly Challenges -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="widget-card">
+            <div class="widget-header">
+              <span class="widget-title"><i data-lucide="award"></i> Personal Records</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem;">
+              <div class="period-box">
+                <div class="period-title">Total Study Time</div>
+                <div class="period-val" id="stat-total-hours">0 hrs</div>
+              </div>
+              <div class="period-box">
+                <div class="period-title">Longest Single Session</div>
+                <div class="period-val" id="stat-longest-session">0 min</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="widget-card">
+            <div class="widget-header">
+              <span class="widget-title"><i data-lucide="target"></i> Weekly Challenges</span>
+            </div>
+            <div id="weekly-challenges-list">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Achievement Badges Grid -->
+      <h3 style="margin-bottom: 1rem;"><i data-lucide="shield"></i> Achievement Badges</h3>
+      <div class="achievements-grid" id="achievements-grid">
+        <!-- Populated dynamically -->
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         TAB 8: PERSONALIZATION & SETTINGS
+         ---------------------------------------------------------------------- -->
+    <section class="app-tab-panel" id="tab-settings">
+      <div style="max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Appearance & Themes -->
+        <div class="widget-card">
+          <div class="widget-header">
+            <span class="widget-title"><i data-lucide="palette"></i> Themes & Personalization</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Theme Mode:</label>
+            <select class="input-select" id="setting-theme-select">
+              <option value="dark">Dark Slate (Default)</option>
+              <option value="light">Modern Light</option>
+              <option value="cyberpunk">Cyberpunk Neon</option>
+              <option value="forest">Emerald Forest</option>
+              <option value="midnight">Midnight AMOLED</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Accent Color:</label>
+            <select class="input-select" id="setting-accent-select">
+              <option value="indigo">Electric Indigo</option>
+              <option value="emerald">Emerald Green</option>
+              <option value="violet">Mystic Violet</option>
+              <option value="rose">Rose Red</option>
+              <option value="amber">Warm Amber</option>
+              <option value="cyan">Vibrant Cyan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Clock Format:</label>
+            <select class="input-select" id="setting-clock-format">
+              <option value="12h">12-Hour (AM/PM with Seconds)</option>
+              <option value="24h">24-Hour Military Format</option>
+            </select>
+          </div>
+          <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" id="setting-show-seconds" checked>
+            <label for="setting-show-seconds" style="font-size: 0.88rem; cursor: pointer;">Show seconds on live clock</label>
+          </div>
+        </div>
+
+        <!-- Optional Cloud Sync Architecture -->
+        <div class="widget-card">
+          <div class="widget-header">
+            <span class="widget-title"><i data-lucide="cloud"></i> Optional Cloud Synchronization</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+            ClockTimer is designed <strong>100% offline-first</strong>. All your sessions, syllabus progress, audio presets, and achievements are stored safely in local browser storage without requiring an account.
+          </p>
+          <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); margin-top: 0.8rem; font-size: 0.82rem;">
+            <strong>Cloud Sync Architecture Ready:</strong> You can export complete JSON backups below or configure Firebase Authentication / Firestore Sync if you wish to synchronize across devices.
+          </div>
+        </div>
+
+        <!-- Data Safety, Backup & Restore -->
+        <div class="widget-card">
+          <div class="widget-header">
+            <span class="widget-title"><i data-lucide="shield-check"></i> Data Safety, Backup & Reset</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Export complete JSON backup archives of your study records, or restore from a previously saved backup.
+          </p>
+          <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+            <button class="btn-secondary-sm" onclick="window.clockTimerApp.exportJSONBackup()"><i data-lucide="download"></i> Export JSON Backup</button>
+            <label class="btn-secondary-sm" style="cursor: pointer; margin: 0;">
+              <i data-lucide="upload"></i> Restore JSON Backup
+              <input type="file" accept=".json" style="display: none;" onchange="window.clockTimerApp.importJSONBackup(this)">
+            </label>
+            <button class="btn-danger-sm" onclick="window.clockTimerApp.resetAllData()"><i data-lucide="trash-2"></i> Factory Reset</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       STAGE 1: DEEP FOCUS FULLSCREEN OVERLAY
+       ======================================================================== -->
+  <div class="deep-focus-overlay" id="deep-focus-overlay">
+    <div class="focus-top-bar">
+      <!-- Left Top Corner: Hide/Show Study Purpose Button in Focus Mode -->
+      <button class="btn-icon" id="btn-focus-toggle-purpose" title="Toggle Purpose Visibility">
+        <i data-lucide="eye"></i>
+      </button>
+
+      <!-- Center: Purpose Display -->
+      <div id="focus-purpose-banner">
+        <div class="focus-purpose-display" id="focus-purpose-display">Calculus Chapter 2: Limits</div>
+      </div>
+
+      <!-- Right: Real-time Live Clock in Focus Mode -->
+      <div style="font-family: var(--font-mono); font-size: 1.15rem; color: var(--text-muted);" id="focus-live-clock">
+        12:00:00 PM
+      </div>
+    </div>
+
+    <!-- Center Timer in Focus Mode -->
+    <div class="focus-center-content">
+      <div class="timer-ring-container" style="width: 380px; height: 380px;">
+        <svg class="timer-svg" viewBox="0 0 300 300">
+          <circle class="timer-ring-bg" cx="150" cy="150" r="135"></circle>
+          <circle class="timer-ring-progress" id="focus-progress-ring" cx="150" cy="150" r="135"></circle>
+        </svg>
+        <div class="timer-digits-wrap">
+          <div class="timer-display" id="focus-timer-display" style="font-size: 4.5rem;">25:00</div>
+        </div>
+      </div>
+
+      <div class="timer-actions-row">
+        <button class="btn-primary" id="btn-focus-start">
+          <i data-lucide="play"></i> <span>Start Focus</span>
+        </button>
+        <button class="btn-secondary" id="btn-focus-reset">
+          <i data-lucide="rotate-ccw"></i> Reset
+        </button>
+        <button class="btn-secondary" id="btn-focus-complete">
+          <i data-lucide="check-circle-2"></i> Finish Session
+        </button>
+        <button class="btn-secondary" id="btn-focus-distraction">
+          <i data-lucide="alert-circle"></i> Log Distraction
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Controls in Focus Mode -->
+    <div class="focus-bottom-bar">
+      <button class="btn-secondary-sm" id="btn-exit-focus">
+        <i data-lucide="minimize-2"></i> Exit Deep Focus (Esc)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       STAGE 2: BREAK ASSISTANT & GUIDED BOX BREATHING MODAL
+       ======================================================================== -->
+  <div class="modal-overlay" id="modal-break-assistant">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i data-lucide="wind" style="color: #38bdf8;"></i> Guided Box Breathing & Eye Rest</h3>
+        <button class="btn-icon-xs modal-close-btn"><i data-lucide="x"></i></button>
+      </div>
+      
+      <div class="breathing-box-container">
+        <div class="breathing-circle" id="breathing-visual-circle">
+          <span class="breathing-seconds-text" id="breathing-seconds-text">4s</span>
+        </div>
+        <div class="breathing-guide-text" id="breathing-guide-text">Ready to begin relaxation?</div>
+      </div>
+
+      <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-md); font-size: 0.82rem; margin: 1rem 0; line-height: 1.5;">
+        <strong>20-20-20 Eye-Rest Rule:</strong> Every 20 minutes, look at an object at least 20 feet (6 meters) away for 20 seconds to prevent digital eye strain and refresh concentration.
+      </div>
+
+      <div style="display: flex; justify-content: space-between; gap: 0.5rem;">
+        <button class="btn-primary-sm" id="btn-toggle-breathing">Start Box Breathing (4-4-4-4)</button>
+        <button class="btn-secondary-sm modal-close-btn">Close Assistant</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: ADD NEW SUBJECT
+       ======================================================================== -->
+  <div class="modal-overlay" id="modal-add-subject">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i data-lucide="book-plus"></i> Add New Subject</h3>
+        <button class="btn-icon-xs modal-close-btn"><i data-lucide="x"></i></button>
+      </div>
+      <form id="form-add-subject">
+        <div class="form-group">
+          <label class="form-label">Subject Name:</label>
+          <input type="text" id="input-new-sub-name" class="input-text" placeholder="e.g. Molecular Biology" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Course Code / Tag:</label>
+          <input type="text" id="input-new-sub-code" class="input-text" placeholder="e.g. BIO301">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Accent Color:</label>
+          <input type="color" id="input-new-sub-color" value="#6366f1" style="width: 100%; height: 38px; border: none; cursor: pointer; border-radius: var(--radius-sm);">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.2rem;">
+          <button type="button" class="btn-secondary-sm modal-close-btn">Cancel</button>
+          <button type="submit" class="btn-primary-sm">Create Subject</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CELEBRATION & LEVEL UP
+       ======================================================================== -->
+  <div class="modal-overlay" id="modal-celebration">
+    <div class="modal-dialog" style="text-align: center;">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
+      <h3 class="modal-title" id="celebration-title" style="margin-bottom: 0.5rem;">Celebration!</h3>
+      <p id="celebration-message" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.4rem;">
+        You completed an amazing study session!
+      </p>
+      <button class="btn-primary" onclick="document.getElementById('modal-celebration').classList.remove('active')">
+        Keep Growing &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       CANVAS & TOAST CONTAINERS
+       ======================================================================== -->
+  <canvas id="confetti-canvas"></canvas>
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="audio.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
